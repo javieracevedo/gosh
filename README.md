@@ -1,3 +1,7 @@
+## About
+
+This project is a second rewrite of a custom UNIX-like shell, developed as a hands-on exercise while studying "Operating Systems: Three Easy Pieces" (OSTEP). The primary goal is to deepen my understanding of process management, pipes, and redirection in a UNIX environment.
+
 ## Roadmap
 
 ### 0.1.0 
@@ -34,8 +38,7 @@
 - [ ] Parallel commands
 
 
+## Acknowledgments
 
+[Authors of Operating Systems: Three Easy Pieces.]() Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau, Arpaci-Dusseau Books, November, 2023 (Version 1.10) 
 
-
-
-# go-in-the-shell
