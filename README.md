@@ -13,7 +13,6 @@ This project is my third rewrite of a custom UNIX-like shell, developed as a han
 ### 0.1.1
     
 - [ ] Setup unit testing
-- [ ] Unit test config file parsing code
 
 ### 0.2.0
 
