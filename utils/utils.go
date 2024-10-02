@@ -6,5 +6,5 @@ import (
 )
 
 func GoshPrint(val any) {
-	fmt.Print(config.GlobalShellConfig.PromptColor, val, "\n", config.DEFAULT_COLOR)
+    fmt.Print(config.GlobalShellConfig.PromptColor, val, "\n", config.DEFAULT_COLOR)
 }
