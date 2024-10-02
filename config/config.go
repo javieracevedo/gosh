@@ -2,12 +2,14 @@ package config
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 )
 
-const configFilePath string = "gosh.rc"
+const configFilePath string = "./gosh.rc"
 
 const (
 	BATCH = iota
@@ -45,19 +47,48 @@ var GlobalShellConfig shellConfig;
 func setConfigValues(configLine string) {
 	cli_args := os.Args[1:]
 
+	trimmedConfigLine := strings.TrimSpace(configLine);
+
+
 	if (len(cli_args) >= 1) {
 		GlobalShellConfig.ShellMode = BATCH
 	} else {
 		GlobalShellConfig.ShellMode = INTERPRETER
 	}
 
-	if strings.HasPrefix(configLine, "qotd_list") {
-		GlobalShellConfig.QuoteList = strings.Split(strings.TrimPrefix(configLine, "qotd_list="), ",")
-	} else if strings.HasPrefix(configLine, "prompt_color") {
-		GlobalShellConfig.PromptColor = strings.ReplaceAll(strings.TrimPrefix(configLine, "prompt_color="), "\\033", "\033")
-	} else if strings.HasPrefix(configLine, "path") {
-		GlobalShellConfig.Path = strings.TrimPrefix(configLine, "path=")
+	if strings.HasPrefix(trimmedConfigLine, "qotd_list") {
+		quotes := strings.TrimPrefix(trimmedConfigLine, "qotd_list=")
+		if (quotes != "") {
+			GlobalShellConfig.QuoteList = strings.Split(quotes, ",")
+		}
+	} else if strings.HasPrefix(trimmedConfigLine, "prompt_color") {
+		promptColor := strings.ReplaceAll(strings.TrimPrefix(trimmedConfigLine, "prompt_color="), "\\033", "\033")
+		if (promptColor != "") {
+			GlobalShellConfig.PromptColor = strings.ReplaceAll(strings.TrimPrefix(trimmedConfigLine, "prompt_color="), "\\033", "\033")
+		}
+	} else if strings.HasPrefix(trimmedConfigLine, "path") {
+		GlobalShellConfig.Path = strings.TrimPrefix(trimmedConfigLine, "path=")
 	}
+}
+
+func validateFile(configFile *os.File) ([]string, error) {
+	scanner := bufio.NewScanner(configFile)
+	lines := []string{}
+	for scanner.Scan() {
+		line := scanner.Text()
+		
+		if (line == "") {
+			continue
+		}
+
+		delimCount := strings.Count(line, "=")
+		if (delimCount != 1) {
+			return nil, errors.New("invalid configuration")
+		}
+
+		lines = append(lines, line)
+	}
+	return lines, nil
 }
 
 func InitShellConfig() {
@@ -80,9 +111,12 @@ func InitShellConfig() {
 	}
 	defer configFile.Close()
 
-	scanner := bufio.NewScanner(configFile)
-	for scanner.Scan() {
-		line := scanner.Text()
-		setConfigValues(line)
+	lines, validateFileErr := validateFile(configFile)
+	if (validateFileErr != nil) {
+		log.Fatal(validateFileErr)
+	}
+
+	for _, line := range lines {
+		setConfigValues(strings.TrimSpace(line))
 	}
 }
