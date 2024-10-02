@@ -7,8 +7,8 @@ This project is a second rewrite of a custom UNIX-like shell, developed as a han
 ### 0.1.0 
 
 - [x] Parse config file
-- [ ] Clears cli on startup (using syscalls)
-- [ ] Show QOTD on startup
+- [x] Clears cli on startup (using syscalls)
+- [x] Show QOTD on startup
 
 ### 0.1.1
     
