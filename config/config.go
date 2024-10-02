@@ -64,7 +64,7 @@ func setConfigValues(configLine string) {
 	} else if strings.HasPrefix(trimmedConfigLine, "prompt_color") {
 		promptColor := strings.ReplaceAll(strings.TrimPrefix(trimmedConfigLine, "prompt_color="), "\\033", "\033")
 		if (promptColor != "") {
-			GlobalShellConfig.PromptColor = strings.ReplaceAll(strings.TrimPrefix(trimmedConfigLine, "prompt_color="), "\\033", "\033")
+			GlobalShellConfig.PromptColor = promptColor
 		}
 	} else if strings.HasPrefix(trimmedConfigLine, "path") {
 		GlobalShellConfig.Path = strings.TrimPrefix(trimmedConfigLine, "path=")
