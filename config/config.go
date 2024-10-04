@@ -3,13 +3,10 @@ package config
 import (
 	"bufio"
 	"errors"
-	"fmt"
-	"log"
 	"os"
 	"strings"
 )
 
-const configFilePath string = "./gosh.rc"
 
 const (
     BATCH = iota
@@ -34,41 +31,43 @@ const (
 )
 
 
-type shellConfig struct {
+type ShellConfig struct {
     PromptColor string
     Path string
     QuoteList []string
     ShellMode int
 }
 
-var GlobalShellConfig shellConfig;
+var GlobalShellConfig ShellConfig;
 
 
-func setConfigValues(configLine string) {
+func SetConfigValues(shellConfig ShellConfig, configLine string) (ShellConfig) {
     cli_args := os.Args[1:]
 
     trimmedConfigLine := strings.TrimSpace(configLine);
 
 
     if (len(cli_args) >= 1) {
-        GlobalShellConfig.ShellMode = BATCH
+        shellConfig.ShellMode = BATCH
     } else {
-        GlobalShellConfig.ShellMode = INTERPRETER
+        shellConfig.ShellMode = INTERPRETER
     }
 
     if strings.HasPrefix(trimmedConfigLine, "qotd_list") {
         quotes := strings.TrimPrefix(trimmedConfigLine, "qotd_list=")
         if (quotes != "") {
-            GlobalShellConfig.QuoteList = strings.Split(quotes, ",")
+            shellConfig.QuoteList = strings.Split(quotes, ",")
         }
     } else if strings.HasPrefix(trimmedConfigLine, "prompt_color") {
         promptColor := strings.ReplaceAll(strings.TrimPrefix(trimmedConfigLine, "prompt_color="), "\\033", "\033")
         if (promptColor != "") {
-            GlobalShellConfig.PromptColor = promptColor
+            shellConfig.PromptColor = promptColor
         }
     } else if strings.HasPrefix(trimmedConfigLine, "path") {
-        GlobalShellConfig.Path = strings.TrimPrefix(trimmedConfigLine, "path=")
+        shellConfig.Path = strings.TrimPrefix(trimmedConfigLine, "path=")
     }
+
+    return shellConfig
 }
 
 func validateFile(configFile *os.File) ([]string, error) {
@@ -91,32 +90,33 @@ func validateFile(configFile *os.File) ([]string, error) {
     return lines, nil
 }
 
-func InitShellConfig() {
-    GlobalShellConfig = shellConfig{
+func InitShellConfig(configFilePath string) (ShellConfig, error) {
+    GlobalShellConfig = ShellConfig{
         PromptColor: DEFAULT_COLOR,
     }
 
     var configFile, err = os.Open(configFilePath)
     if err != nil {
-        errorMessage := "could not find shell's configuration file (gshell.rc), using default values..."
         if (os.IsTimeout(err)) {
-            fmt.Println("Timeout:", errorMessage)
+            return GlobalShellConfig, errors.New("timeout error: could not open shell's configuration file")
         } else if (os.IsNotExist(err)) {
-            fmt.Println("File not found:", errorMessage)
+            return GlobalShellConfig, errors.New("file not found: could not open shell's configuration file")
         } else if (os.IsPermission(err)) {
-            fmt.Println("Permission denied:", errorMessage)
+            return GlobalShellConfig, errors.New("permission denied: could not open shell's configuration file")
         } else {
-            fmt.Println("Unknown error:", errorMessage)
+            return GlobalShellConfig, errors.New("unknown error: could not open shell's configuration file")
         }
     }
     defer configFile.Close()
 
     lines, validateFileErr := validateFile(configFile)
     if (validateFileErr != nil) {
-        log.Fatal(validateFileErr)
+        return GlobalShellConfig, validateFileErr
     }
 
     for _, line := range lines {
-        setConfigValues(strings.TrimSpace(line))
+        GlobalShellConfig = SetConfigValues(GlobalShellConfig, line)
     }
+
+    return GlobalShellConfig, nil
 }

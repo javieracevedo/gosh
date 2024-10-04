@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gosh/config"
+	"log"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -28,7 +29,9 @@ func printRandomQuote() {
 func main() {
     exec_clear()
 
-    config.InitShellConfig()
-
+    _, initShellConfigErr := config.InitShellConfig("./gosh.rc")
+    if (initShellConfigErr != nil) {
+        log.Fatal(initShellConfigErr)
+    }
     printRandomQuote()
 }
