@@ -172,7 +172,7 @@ func TestInitShellConfigValidConfigFile(t *testing.T) {
     }
 
     if (config.Path != "/usr/bin" || config.PromptColor != "\033[35m" || config.QuoteList[0] != "quote 1" || config.QuoteList[1] != "quote 2") {
-        t.Errorf("config path doesnt have right values")
+        t.Errorf("config.InitShellConfig(%v), should return a valid configuration with values (%v, %v, %v )", filePath, config.Path, config.PromptColor, config.QuoteList)
     }
 
 
