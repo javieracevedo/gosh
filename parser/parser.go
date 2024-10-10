@@ -22,6 +22,10 @@ func CleanArgs(args []string) []string {
 func ParseCommandLine(line string) ([][]string, error) {
     var commands [][]string;
 
+	if line == "\n" {
+		return commands, nil
+	}
+
 	trimmedLine := strings.TrimSpace(line)
 	if (len(trimmedLine) > ARG_MAX) {
 		return nil, errors.New("command exceeds the maximum number of arguments")	
