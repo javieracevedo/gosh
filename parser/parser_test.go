@@ -41,14 +41,11 @@ func TestCleanArgsWithNewLinedStrings(t *testing.T) {
 }
 
 func TestParseCommandLineWithOnlyNewLinedString(t *testing.T) {
-    expectedName, expectedArgs := "", []string{}
     input := "\n"
 
-	commands, _ := parser.ParseCommandLine(input)
-	commandName := commands[0][0]
-	commandArgs := commands[0][1:]
+	commands, err := parser.ParseCommandLine(input)
 
-    if (commandName != expectedName || !utils.SlicesEqual(commandArgs, expectedArgs)) {
+    if (commands != nil || err != nil) {
         t.Errorf("TestParseCommandLineWithOnlyNewLinedString: failed")
     }
 }
