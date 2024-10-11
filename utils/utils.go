@@ -10,15 +10,15 @@ func GoshPrint(val any) {
 }
 
 func SlicesEqual(a []string, b []string) bool {
-	if len(a) != len(b) {
-		return false
-	}
+    if len(a) != len(b) {
+        return false
+    }
 
-	for idx := range a {
-		if a[idx] != b[idx] {
-			return false
-		}
-	}
-	
-	return true
+    for idx := range a {
+        if a[idx] != b[idx] {
+            return false
+        }
+    }
+    
+    return true
 }

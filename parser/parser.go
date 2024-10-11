@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	ARG_MAX = 2097152
+    ARG_MAX = 2097152
 )
 
 func CleanArgs(args []string) []string {
@@ -22,17 +22,26 @@ func CleanArgs(args []string) []string {
 func ParseCommandLine(line string) ([][]string, error) {
     var commands [][]string;
 
-	if line == "\n" {
-		return commands, nil
-	}
+    if line == "\n" {
+        return commands, nil
+    }
 
-	trimmedLine := strings.TrimSpace(line)
-	if (len(trimmedLine) > ARG_MAX) {
-		return nil, errors.New("command exceeds the maximum number of arguments")	
-	}
+    if (len(line) > ARG_MAX) {
+        return nil, errors.New("command exceeds the maximum number of arguments")	
+    }
 
-    command := strings.Split(trimmedLine, " ")
-	commands = append(commands, command)
+    splittedCommands := strings.Split(line, "&")
+    for i := 0; i < len(splittedCommands); i++ {
+        trimmedCommand := strings.TrimSpace(splittedCommands[i])
+        if (trimmedCommand == "") {
+            continue
+        }
+
+        command := strings.Split(strings.TrimSpace(splittedCommands[i]), " ")
+        if (len(command) >= 1) {
+            commands = append(commands, command)
+        }
+    }
 
     return commands, nil
 }
