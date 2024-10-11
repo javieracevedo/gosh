@@ -85,31 +85,31 @@ func ExecuteCommand(argv []string) (int, error) {
 
 func ExecuteCommands(wg *sync.WaitGroup, commands [][]string) {
     for i := 0; i < len(commands); i++ {
-		wg.Add(1)
+        wg.Add(1)
 
-		go func(command []string) {
-			defer wg.Done()
+        go func(command []string) {
+            defer wg.Done()
 
-			pid, err := ExecuteCommand(commands[i])
-			if (err != nil) {
+            pid, err := ExecuteCommand(commands[i])
+            if (err != nil) {
                 fmt.Println("An error occurred executing command:", command)
-				return
-			}
+                return
+            }
 
-			var wstatus syscall.WaitStatus
-			_, waitErr := syscall.Wait4(pid, &wstatus, 0, nil)
-			if waitErr != nil {
-				fmt.Println("Error waiting for child:", waitErr)
-				return
-			}
-		}(commands[i]) 
+            var wstatus syscall.WaitStatus
+            _, waitErr := syscall.Wait4(pid, &wstatus, 0, nil)
+            if waitErr != nil {
+                fmt.Println("Error waiting for child:", waitErr)
+                return
+            }
+        }(commands[i]) 
     }
 }
 
 func ExecuteCommandsAndWait(commands [][]string) {
     var wg sync.WaitGroup
 
-	// This is not being executed 
+    // This is not being executed 
     ExecuteCommands(&wg, commands)
 
     wg.Wait()
