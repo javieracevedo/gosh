@@ -2,6 +2,7 @@ package parser
 
 import (
 	"errors"
+	"gosh/utils"
 	"strings"
 )
 
@@ -26,11 +27,13 @@ func ParseCommandLine(line string) ([][]string, error) {
         return commands, nil
     }
 
+	line = utils.ConvertTabToSpaces(line)
+
     if (len(line) > ARG_MAX) {
         return nil, errors.New("command exceeds the maximum number of arguments")	
     }
 
-    splittedCommands := strings.Split(line, "&")
+    splittedCommands := strings.Split(strings.TrimSpace(line), "&")
     for i := 0; i < len(splittedCommands); i++ {
         trimmedCommand := strings.TrimSpace(splittedCommands[i])
         if (trimmedCommand == "") {
@@ -38,8 +41,10 @@ func ParseCommandLine(line string) ([][]string, error) {
         }
 
         command := strings.Split(strings.TrimSpace(splittedCommands[i]), " ")
-        if (len(command) >= 1) {
-            commands = append(commands, command)
+		cleanedCommand := utils.RemoveEmptyStrings(command)
+
+        if (len(cleanedCommand) >= 1) {
+            commands = append(commands, cleanedCommand)
         }
     }
 
