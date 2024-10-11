@@ -24,7 +24,7 @@ func ParseCommandLine(line string) ([][]string, error) {
     var commands [][]string;
 
     if line == "\n" {
-        return commands, nil
+        return nil, nil
     }
 
 	line = utils.ConvertTabToSpaces(line)
