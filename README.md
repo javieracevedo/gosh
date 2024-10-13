@@ -9,16 +9,20 @@ This project is my third rewrite of a custom UNIX-like shell, developed as a han
 - [x] Show QOTD on startup    
 - [x] Setup unit testing
 - [ ] Add logs
-- [ ] Parse command line input
-- [ ] Execute single parsed command per line
-    - [ ] Check return call of all system calls
+- [x] Parse command line input
+- [x] Execute single parsed command per line
+    - [x] Check return call of all system calls
     - [ ] White space and tab handling
 - [ ] Parse batched command from txt file
-- [ ] Execute single parsed command per line
-    - [ ] Check return call of all system calls
+- [x] Execute single parsed command per line
+    - [x] Check return call of all system calls
     - [ ] White space and tab handling
 - [ ] Redirection of ouput to a file
-- [ ] Parallel commands
+- [x] Parallel commands
+- [ ] Built-in commands
+    [ ] path
+    [ ] exit
+    [ ] cd
 
 ## Acknowledgments
 
