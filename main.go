@@ -1,37 +1,38 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"gosh/config"
+	"gosh/exec"
+	"gosh/parser"
 	"log"
-	"math/rand"
 	"os"
-	"os/exec"
+	"syscall"
 )
 
 
-func exec_clear() {
-    clear_cmd := exec.Command("clear")
-    clear_cmd.Stdout = os.Stdout
-    clear_cmd.Run()
-}
-
-func printRandomQuote() {
-    quote_length := len(config.GlobalShellConfig.QuoteList)
-    if (quote_length > 0) {
-        randomIndex := rand.Intn(len(config.GlobalShellConfig.QuoteList))
-        randomItem := config.GlobalShellConfig.QuoteList[randomIndex]
-        fmt.Print(config.CYAN_COLOR, "Quote of the Day: \n\n", config.DEFAULT_COLOR)
-        fmt.Print(config.CYAN_COLOR, randomItem, "\n\n", config.DEFAULT_COLOR)
-    }
-}
-
 func main() {
-    exec_clear()
+    config.InitShellConfig("./gosh.rc")
+    
+    var ws syscall.WaitStatus
+    pid, _ := exec.ExecuteCommand([]string{"clear"})
+    syscall.Wait4(pid, &ws, 0, nil)
 
-    _, initShellConfigErr := config.InitShellConfig("./gosh.rc")
-    if (initShellConfigErr != nil) {
-        log.Fatal(initShellConfigErr)
+    exec.DisplayRandomQuote()
+
+    reader := bufio.NewReader(os.Stdin)
+
+    for {
+        fmt.Print("gosh> ")
+    
+        input, _ := reader.ReadString('\n')
+    
+        commands, err := parser.ParseCommandLine(input)
+        if err != nil {
+            log.Fatal(err)
+        }
+
+        exec.ExecuteCommandsAndWait(commands)
     }
-    printRandomQuote()
 }
