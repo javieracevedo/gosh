@@ -15,7 +15,6 @@ import (
 func main() {
     config.InitShellConfig("./gosh.rc")
     
-    // Clear the screen
     var ws syscall.WaitStatus
     pid, _ := exec.ExecuteCommand([]string{"clear"})
     syscall.Wait4(pid, &ws, 0, nil)
