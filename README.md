@@ -20,9 +20,9 @@ This project is my third rewrite of a custom UNIX-like shell, developed as a han
 - [ ] Redirection of ouput to a file
 - [x] Parallel commands
 - [ ] Built-in commands
-    [ ] path
-    [ ] exit
-    [ ] cd
+    - [ ] path
+    - [ ] exit
+    - [ ] cd
 
 ## Acknowledgments
 
