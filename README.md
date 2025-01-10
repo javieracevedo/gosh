@@ -16,7 +16,7 @@ This project is my third rewrite of a custom UNIX-like shell, developed as a han
 - [ ] Parse batched command from txt file
 - [x] Execute single parsed command per line
     - [x] Check return call of all system calls
-    - [ ] White space and tab handling
+    - [x] White space and tab handling
 - [ ] Redirection of ouput to a file
 - [x] Parallel commands
 - [ ] Built-in commands
