@@ -22,7 +22,8 @@ This project is my third rewrite of a custom UNIX-like shell, developed as a han
 - [ ] Built-in commands
     - [ ] path
     - [ ] exit
-    - [ ] cd
+    - [x] cd
+
 
 ## Acknowledgments
 

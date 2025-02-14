@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"gosh/config"
-	"log"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -76,40 +75,51 @@ func ExecuteCommand(argv []string) (int, error) {
     
     pid, err := syscall.ForkExec(commandPath, argv, attr)
     if err != nil {
-        log.Fatal(err)
         return -1, errors.New("error while forking and executing command")
     }
 
     return pid, nil;
 }
 
+func BuiltinCd(directory string) error {
+    if err := syscall.Chdir(directory); err != nil {
+        error := fmt.Errorf("error changing directory: %w", err)
+        return error
+    }
+    return nil;
+}
+
 func ExecuteCommands(wg *sync.WaitGroup, commands [][]string) {
     for i := 0; i < len(commands); i++ {
         wg.Add(1)
-
-        go func(command []string) {
+        go func(i int, command []string) {
             defer wg.Done()
-
-            pid, err := ExecuteCommand(commands[i])
-            if (err != nil) {
-                fmt.Println("An error occurred executing command:", command)
-                return
+            if command[0] == "cd" {
+                if len(command) > 1 {
+                    cdError := BuiltinCd(command[1])
+                    if (cdError != nil) {
+                        fmt.Println(cdError)
+                    }
+                }
+            } else {
+                pid, err := ExecuteCommand(command)
+                if err != nil {
+                    fmt.Println("error executing command:", err)
+                    return
+                }
+                var wstatus syscall.WaitStatus
+                if _, err := syscall.Wait4(pid, &wstatus, 0, nil); err != nil {
+                    fmt.Println("error waiting for child process:", err)
+                    return
+                }
             }
-
-            var wstatus syscall.WaitStatus
-            _, waitErr := syscall.Wait4(pid, &wstatus, 0, nil)
-            if waitErr != nil {
-                fmt.Println("Error waiting for child:", waitErr)
-                return
-            }
-        }(commands[i]) 
+        }(i, commands[i])
     }
 }
 
 func ExecuteCommandsAndWait(commands [][]string) {
     var wg sync.WaitGroup
 
-    // This is not being executed 
     ExecuteCommands(&wg, commands)
 
     wg.Wait()
