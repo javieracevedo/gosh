@@ -121,64 +121,64 @@ func TestBuiltInCd_EACCESS(t *testing.T) {
 }
 
 func TestBuiltInCd_ENAMETOOLONG(t *testing.T) {
-	dirname := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-	
-	cdError := exec.BuiltinCd(dirname)
+    dirname := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
-	if cdError == nil {
-		t.Errorf("BuiltInCd(%v) should return an error when changing to directory with name longer than 255 characters.", dirname)
-	}
+    cdError := exec.BuiltinCd(dirname)
 
-	if !errors.Is(cdError, syscall.ENAMETOOLONG) {
-		t.Errorf("Expected ENAMETOOLONG error, got: %v", cdError)
-	}
+    if cdError == nil {
+    	t.Errorf("BuiltInCd(%v) should return an error when changing to directory with name longer than 255 characters.", dirname)
+    }
+
+    if !errors.Is(cdError, syscall.ENAMETOOLONG) {
+        t.Errorf("Expected ENAMETOOLONG error, got: %v", cdError)
+    }
 }
 
 func TestBuiltInCd_ENOENT(t *testing.T) {
-	dirname := "nonexistent_file"
+    dirname := "nonexistent_file"
 
-	cdError := exec.BuiltinCd(dirname)
+    cdError := exec.BuiltinCd(dirname)
 
-	if cdError == nil {
-		t.Errorf("BuiltInCd(%v) should return an error", dirname)
-	}
+    if cdError == nil {
+	    t.Errorf("BuiltInCd(%v) should return an error", dirname)
+    }
 
-	if !errors.Is(cdError, syscall.ENOENT) {
-		t.Errorf("Expected ENOENT error, got: %v", cdError)
-	}
+    if !errors.Is(cdError, syscall.ENOENT) {
+        t.Errorf("Expected ENOENT error, got: %v", cdError)
+    }
 }
 
 func TestBuiltInCd_ENOTDIR(t *testing.T) {
-	fileName := "text.txt"
-	_, err := os.Create(fileName)
-	if (err != nil) {
-		t.Fatalf("Failed to create test file (text.txt): %v", err)
-	}
+    fileName := "text.txt"
+    _, err := os.Create(fileName)
+    if (err != nil) {
+        t.Fatalf("Failed to create test file (text.txt): %v", err)
+    }
 
-	cdError := exec.BuiltinCd(fileName)
-	if (cdError == nil) {
-		t.Errorf("BuiltInCd(%v) should return an error when attempting to cd into a regular file", fileName)
-	}
+    cdError := exec.BuiltinCd(fileName)
+    if (cdError == nil) {
+        t.Errorf("BuiltInCd(%v) should return an error when attempting to cd into a regular file", fileName)
+    }
 
-	if !errors.Is(cdError, syscall.ENOTDIR) {
-		t.Errorf("Expected ENOTDIR error, got: %v", cdError)
-	}
+    if !errors.Is(cdError, syscall.ENOTDIR) {
+        t.Errorf("Expected ENOTDIR error, got: %v", cdError)
+    }
 
-	t.Cleanup(func() {
+    t.Cleanup(func() {
         os.Remove(fileName)
     })
 }
 
 func TestBuiltInCd_ELOOP(t *testing.T) {
-	link1 := "./test_files/link1"
+    link1 := "./test_files/link1"
 
-	cdError := exec.BuiltinCd(link1)
+    cdError := exec.BuiltinCd(link1)
 
-	if (cdError == nil) {
-		t.Errorf("BuiltInCd(%v) should return an error when attempting to cd into circular symbolic links", link1)
-	}
+    if (cdError == nil) {
+        t.Errorf("BuiltInCd(%v) should return an error when attempting to cd into circular symbolic links", link1)
+    }
 
-	if !errors.Is(cdError, syscall.ELOOP) {
-		t.Errorf("Expected EIO error, got: %v", cdError)
-	}
+    if !errors.Is(cdError, syscall.ELOOP) {
+        t.Errorf("Expected EIO error, got: %v", cdError)
+    }
 }
