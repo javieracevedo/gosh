@@ -82,11 +82,11 @@ func ExecuteCommand(argv []string) (int, error) {
 }
 
 func BuiltinCd(directory string) error {
-	if err := syscall.Chdir(directory); err != nil {
-		error := fmt.Errorf("error changing directory: %w", err)
-		return error
-	}
-	return nil;
+    if err := syscall.Chdir(directory); err != nil {
+        error := fmt.Errorf("error changing directory: %w", err)
+        return error
+    }
+    return nil;
 }
 
 func ExecuteCommands(wg *sync.WaitGroup, commands [][]string) {
@@ -95,21 +95,21 @@ func ExecuteCommands(wg *sync.WaitGroup, commands [][]string) {
         go func(i int, command []string) {
             defer wg.Done()
             if command[0] == "cd" {
-				if len(command) > 1 {
-					cdError := BuiltinCd(command[1])
-					if (cdError != nil) {
-						fmt.Println(cdError)
-					}
-				}
+                if len(command) > 1 {
+                    cdError := BuiltinCd(command[1])
+                    if (cdError != nil) {
+                        fmt.Println(cdError)
+                    }
+                }
             } else {
                 pid, err := ExecuteCommand(command)
                 if err != nil {
-					fmt.Println("error executing command:", err)
+                    fmt.Println("error executing command:", err)
                     return
                 }
                 var wstatus syscall.WaitStatus
                 if _, err := syscall.Wait4(pid, &wstatus, 0, nil); err != nil {
-					fmt.Println("error waiting for child process:", err)
+                    fmt.Println("error waiting for child process:", err)
                     return
                 }
             }
