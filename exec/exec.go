@@ -101,6 +101,8 @@ func ExecuteCommands(wg *sync.WaitGroup, commands [][]string) {
                         fmt.Println(cdError)
                     }
                 }
+            } else if command[0] == "exit" {
+                syscall.Exit(0)
             } else {
                 pid, err := ExecuteCommand(command)
                 if err != nil {
