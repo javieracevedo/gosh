@@ -94,10 +94,12 @@ func ExecuteCommands(wg *sync.WaitGroup, commands [][]string) {
         wg.Add(1)
         go func(i int, command []string) {
             defer wg.Done()
-            if command[0] == "cd" && len(command) > 1 {
-				cdError := BuiltinCd(command[1])
-				if (cdError != nil) {
-					fmt.Println(cdError)
+            if command[0] == "cd" {
+				if len(command) > 1 {
+					cdError := BuiltinCd(command[1])
+					if (cdError != nil) {
+						fmt.Println(cdError)
+					}
 				}
             } else {
                 pid, err := ExecuteCommand(command)
