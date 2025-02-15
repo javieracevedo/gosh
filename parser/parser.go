@@ -1,8 +1,10 @@
 package parser
 
 import (
+	"bufio"
 	"errors"
 	"gosh/utils"
+	"os"
 	"strings"
 )
 
@@ -49,4 +51,35 @@ func ParseCommandLine(line string) ([][]string, error) {
     }
 
     return commands, nil
+}
+
+func ParseBatchFile(fileName string) ([][]string, error) {
+    var parsedCommands [][]string
+
+    file, err := os.Open(fileName)
+    if err != nil {
+        return nil, err
+    }
+    defer file.Close()
+
+    scanner := bufio.NewScanner(file)
+    
+    for scanner.Scan() {
+        line := scanner.Text()
+        if len(line) > 0 {
+            lineCommands, err := ParseCommandLine(line)
+            if err != nil {
+                return nil, err
+            }
+            if lineCommands != nil {
+                parsedCommands = append(parsedCommands, lineCommands...)
+            }
+        }
+    }
+
+    if err := scanner.Err(); err != nil {
+        return nil, err
+    }
+
+    return parsedCommands, nil
 }

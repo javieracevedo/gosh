@@ -14,25 +14,35 @@ import (
 
 func main() {
     config.InitShellConfig("./gosh.rc")
-    
-    var ws syscall.WaitStatus
-    pid, _ := exec.ExecuteCommand([]string{"clear"})
-    syscall.Wait4(pid, &ws, 0, nil)
+    config.SetShellMode()
 
-    exec.DisplayRandomQuote()
-
-    reader := bufio.NewReader(os.Stdin)
-
-    for {
-        fmt.Print("gosh> ")
-    
-        input, _ := reader.ReadString('\n')
-    
-        commands, err := parser.ParseCommandLine(input)
-        if err != nil {
+    if (config.GlobalShellConfig.ShellMode == config.BATCH) {
+        parsedCommands, err := parser.ParseBatchFile(os.Args[1])
+        if (err != nil) {
             log.Fatal(err)
         }
-
-        exec.ExecuteCommandsAndWait(commands)
-    }
+    
+        exec.ExecuteCommandsAndWait(parsedCommands)
+    } else {
+        var ws syscall.WaitStatus
+        pid, _ := exec.ExecuteCommand([]string{"clear"})
+        syscall.Wait4(pid, &ws, 0, nil)
+    
+        exec.DisplayRandomQuote()
+    
+        reader := bufio.NewReader(os.Stdin)
+    
+        for {
+            fmt.Print("gosh> ")
+        
+            input, _ := reader.ReadString('\n')
+        
+            commands, err := parser.ParseCommandLine(input)
+            if err != nil {
+                log.Fatal(err)
+            }
+    
+            exec.ExecuteCommandsAndWait(commands)
+        }
+    }    
 }

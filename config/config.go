@@ -126,3 +126,11 @@ func ExtendPath(directories []string) {
         GlobalShellConfig.Path = GlobalShellConfig.Path + ":" + directory
     }
 }
+
+func SetShellMode() {
+    if (len(os.Args) > 1) {
+        GlobalShellConfig.ShellMode = BATCH
+    } else {
+        GlobalShellConfig.ShellMode = INTERPRETER
+    }
+}
