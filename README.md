@@ -19,8 +19,8 @@ This project is my third rewrite of a custom UNIX-like shell, developed as a han
     - [x] White space and tab handling
 - [ ] Redirection of ouput to a file
 - [x] Parallel commands
-- [ ] Built-in commands
-    - [ ] path
+- [x] Built-in commands
+    - [x] path
     - [x] exit
     - [x] cd
 
