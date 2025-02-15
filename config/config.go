@@ -120,3 +120,9 @@ func InitShellConfig(configFilePath string) (ShellConfig, error) {
 
     return GlobalShellConfig, nil
 }
+
+func ExtendPath(directories []string) {
+    for _, directory := range directories {
+        GlobalShellConfig.Path = GlobalShellConfig.Path + ":" + directory
+    }
+}

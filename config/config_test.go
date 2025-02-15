@@ -183,3 +183,17 @@ func TestInitShellConfigValidConfigFile(t *testing.T) {
         }
     })
 }
+
+func TestExtendConfigPath(t *testing.T) {
+    initialShellConfig := config.ShellConfig{}
+    configLines := []string{"prompt_color=", "path=/usr/bin", "qotd_list="}
+    
+    config.SetConfigValues(initialShellConfig, strings.TrimSpace(configLines[1]))
+
+    testDir := "/bin/test"
+    config.ExtendPath(testDir)
+
+    if config.Path != "/usr/bin:/bin/test" {
+        t.Errorf("Expected path to be '/usr/bin:/bin/test', got '%s'", initialShellConfig.Path)
+    }
+}

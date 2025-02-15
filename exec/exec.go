@@ -89,6 +89,14 @@ func BuiltinCd(directory string) error {
     return nil;
 }
 
+func BuiltinPath(command []string) {
+    if (len(command) > 1) {
+        config.ExtendPath(command[1:])
+    } else {
+        fmt.Println(config.GlobalShellConfig.Path)
+    }
+}
+
 func ExecuteCommands(wg *sync.WaitGroup, commands [][]string) {
     for i := 0; i < len(commands); i++ {
         wg.Add(1)
@@ -103,6 +111,8 @@ func ExecuteCommands(wg *sync.WaitGroup, commands [][]string) {
                 }
             } else if command[0] == "exit" {
                 syscall.Exit(0)
+            } else if (command[0] == "path")  {
+                BuiltinPath(command)
             } else {
                 pid, err := ExecuteCommand(command)
                 if err != nil {
