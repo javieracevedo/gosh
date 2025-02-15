@@ -13,7 +13,7 @@ This project is my third rewrite of a custom UNIX-like shell, developed as a han
 - [x] Execute single parsed command per line
     - [x] Check return call of all system calls
     - [x] White space and tab handling
-- [ ] Parse batched command from txt file
+- [x] Parse batched command from txt file
 - [x] Execute single parsed command per line
     - [x] Check return call of all system calls
     - [x] White space and tab handling
