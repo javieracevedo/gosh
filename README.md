@@ -2,13 +2,12 @@
 
 This project is my third rewrite of a custom UNIX-like shell, developed as a hands-on exercise while studying "Operating Systems: Three Easy Pieces" (OSTEP). The primary goal is to deepen my understanding of process management, pipes, and redirection in a UNIX environment.
 
-## Roadmap
+## Features
 
 - [x] Parse config file
 - [x] Clears CLI on startup
 - [x] Show QOTD on startup    
 - [x] Setup unit testing
-- [ ] Add logs
 - [x] Parse command line input
 - [x] Execute single parsed command per line
     - [x] Check return call of all system calls
@@ -17,7 +16,7 @@ This project is my third rewrite of a custom UNIX-like shell, developed as a han
 - [x] Execute single parsed command per line
     - [x] Check return call of all system calls
     - [x] White space and tab handling
-- [ ] Redirection of ouput to a file
+- [x] Redirection of ouput to a file
 - [x] Parallel commands
 - [x] Built-in commands
     - [x] path
