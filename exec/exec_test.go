@@ -13,7 +13,7 @@ import (
 func TestCommandNotExist(t *testing.T) {
     command := []string{"nonexistentcommand"}
 
-    _, err := exec.ExecuteCommand(command);
+    _, err := exec.ExecuteCommand(command, "");
     if (err == nil) {
         t.Errorf("exec.ExecuteCommand(%v) should return an error when function is called with command that doesn't exists.", command[0])
     }
@@ -22,7 +22,7 @@ func TestCommandNotExist(t *testing.T) {
 func TestCannotFindCommandEmptyPath(t *testing.T) {
     command := []string{"ls"}
 
-    _, err := exec.ExecuteCommand(command);
+    _, err := exec.ExecuteCommand(command, "");
 
     if (err == nil) {
         t.Errorf("exec.ExecuteCommand(%v) should return an error when function is called with command that exists but path is not set.", command[0])
@@ -37,7 +37,7 @@ func TestExistingCommandPathSet(t *testing.T) {
     }
     config.GlobalShellConfig = config.SetConfigValues(initialShellConfig, configLines[0])
     
-    _, err := exec.ExecuteCommand(command);
+    _, err := exec.ExecuteCommand(command, "");
 
     if (err != nil) {
         t.Errorf("exec.ExecuteCommand(%v) should execute normally and not return an error when existing command is executed with proper path set.", command[0])
@@ -56,7 +56,7 @@ func TestExistingCommandWithoutReadPermissions(t *testing.T) {
 	utils.CreateFileWithPermissions(filename, permissions, content)
     
 	command := []string{"noreadtest"}
-    _, commandExecErr := exec.ExecuteCommand(command)
+    _, commandExecErr := exec.ExecuteCommand(command, nil)
     
     if commandExecErr == nil {
         t.Errorf("exec.ExecuteCommand(%v) should return an error when executing a shell script without read permissions.", command[0])
@@ -83,7 +83,7 @@ func TestExistingCommandWithoutExecutePermissions(t *testing.T) {
     utils.CreateFileWithPermissions(filename, permissions, content)
 
     command := []string{"noreadtest"}
-    _, commandExecErr := exec.ExecuteCommand(command);
+    _, commandExecErr := exec.ExecuteCommand(command, "");
 
 
     if (commandExecErr == nil) {

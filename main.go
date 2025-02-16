@@ -21,11 +21,11 @@ func main() {
         if (err != nil) {
             log.Fatal(err)
         }
-    
+
         exec.ExecuteCommandsAndWait(parsedCommands)
     } else {
         var ws syscall.WaitStatus
-        pid, _ := exec.ExecuteCommand([]string{"clear"})
+        pid, _ := exec.ExecuteCommand([]string{"clear"}, "")
         syscall.Wait4(pid, &ws, 0, nil)
     
         exec.DisplayRandomQuote()

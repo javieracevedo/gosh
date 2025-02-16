@@ -22,8 +22,14 @@ func CleanArgs(args []string) []string {
     return result
 }
 
-func ParseCommandLine(line string) ([][]string, error) {
-    var commands [][]string;
+type ParsedCommand struct {
+    Name string
+    Argv []string
+    RedirectFilePath string
+}
+
+func ParseCommandLine(line string) ([]ParsedCommand, error) {
+    var commands []ParsedCommand;
 
     if line == "\n" {
         return nil, nil
@@ -41,20 +47,33 @@ func ParseCommandLine(line string) ([][]string, error) {
         if (trimmedCommand == "") {
             continue
         }
+        
+        // See if there is a redirect line (eg: command >> file.txt)
+        // if so, parse it.
+        splittedByRedirectCommandLine := strings.Split(strings.TrimSpace(splittedCommands[i]), ">>")
+        var redirectFilePath string
+        if (len(splittedByRedirectCommandLine) > 1) {
+            redirectFilePath = strings.TrimSpace(splittedByRedirectCommandLine[1])
+        }
 
-        command := strings.Split(strings.TrimSpace(splittedCommands[i]), " ")
-		cleanedCommand := utils.RemoveEmptyStrings(command)
+        command := strings.Split(strings.TrimSpace(splittedByRedirectCommandLine[0]), " ")
+        cleanedCommand := utils.RemoveEmptyStrings(command)
+        parsedCommand := ParsedCommand{
+            Name: command[0],
+            Argv: command,
+            RedirectFilePath: redirectFilePath,
+        }
 
         if (len(cleanedCommand) >= 1) {
-            commands = append(commands, cleanedCommand)
+            commands = append(commands, parsedCommand)
         }
     }
 
     return commands, nil
 }
 
-func ParseBatchFile(fileName string) ([][]string, error) {
-    var parsedCommands [][]string
+func ParseBatchFile(fileName string) ([]ParsedCommand, error) {
+    var parsedCommands []ParsedCommand
 
     file, err := os.Open(fileName)
     if err != nil {
@@ -67,12 +86,13 @@ func ParseBatchFile(fileName string) ([][]string, error) {
     for scanner.Scan() {
         line := scanner.Text()
         if len(line) > 0 {
-            lineCommands, err := ParseCommandLine(line)
+            parsedCommandLine, err := ParseCommandLine(line)
             if err != nil {
                 return nil, err
             }
-            if lineCommands != nil {
-                parsedCommands = append(parsedCommands, lineCommands...)
+
+            for i := 0; i < len(parsedCommandLine); i++ {
+                parsedCommands = append(parsedCommands, parsedCommandLine[i])
             }
         }
     }
